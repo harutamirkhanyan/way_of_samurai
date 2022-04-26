@@ -1,19 +1,22 @@
 // import React from "react";
-// import StoreContext from "../../StoreContext";
+// import navbarReducer from "../redux/navbarReducer";
 // import Friend from "./Friend/Friend";
 // import style from "./Friends.module.css";
 
+// let x=navbarReducer().friends
+// console.log(x)
+
 // const Friends = (props) => {
 //   return (
-//     <StoreContext.Consumer>
+//     <>
 //       {(store) => {
-//         let state = store.getState().navbar.friends;
+//         let state = navbarReducer().friends;
 //         const friendInfo = state.map((frend) => (
 //           <Friend key={frend.id} name={frend.name} />
 //         ));
-//         return <div className={style.friends}>{friendInfo}</div>;
+//         // return <div className={style.friends}>{friendInfo}</div>;
 //       }}
-//     </StoreContext.Consumer>
+//     </>
 //   );
 // };
 

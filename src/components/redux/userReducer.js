@@ -1,15 +1,19 @@
 const FOLLOW = 'FOLLOW';
 const UNFOLLOW = 'UNFOLLOW';
 const SET_USERS = 'SET_USERS';
+const SET_CURRENT_PAGE = 'SET_CURRENT_PAGE';
+const SET_TOTAL_USER_COUNT = 'SET_TOTAL_USER_COUNT';
+const TOOGLE_IS_FEATCHING='TOOGLE_IS_FEATCHING';
 
 let initalState = {
-  users: [
-  ]
+  users: [],
+  pageSize: 100,
+  totalUsersCount: 0,
+  currentPage: 1,
+  isFeatching: false
 };
 
 const usersReducer = (state = initalState, action) => {
-  console.log(action, 'action')
-  console.log(state, 'state')
   switch (action.type) {
     case FOLLOW:
       return {
@@ -42,26 +46,59 @@ const usersReducer = (state = initalState, action) => {
       }
 
       case SET_USERS: {
-        return { ...state, users: [...state.users,   ...action.users]}
-    }
-        default:
-          return state
+        return {
+          ...state,
+          users: action.users
+        }
+      }
+      case SET_CURRENT_PAGE: {
+        return {
+          ...state,
+          currentPage: action.currentPage
+        }
+      }
+      case SET_TOTAL_USER_COUNT:{
+        return {
+          ...state,
+          totalUsersCount: action.userCount
+        }
+      }
+      case TOOGLE_IS_FEATCHING:{
+        return {
+          ...state,
+          isFeatching: action.isFeatching
+        }
+      }
+      default:
+        return state
   }
 }
 
 
-export const followAC = (userId) => ({
+export const follow = (userId) => ({
   type: FOLLOW,
   userId
 });
-export const unFollowAC = (userId) => ({
+export const unFollow = (userId) => ({
   type: UNFOLLOW,
   userId
 });
-export const setUsersAC = (users) => ({
+export const setUsers = (users) => ({
   type: SET_USERS,
   users
 });
+export const currentPage = (currentPage) => ({
+  type: SET_CURRENT_PAGE,
+  currentPage
+});
+export const setTotalUsersCount = (userCount) => ({
+  type: SET_TOTAL_USER_COUNT,
+  userCount
+});
 
+export const toogleIsFeatching=(isFeatching)=>({
+  type: TOOGLE_IS_FEATCHING,
+  isFeatching
+})
 
 export default usersReducer

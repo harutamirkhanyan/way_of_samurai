@@ -4,13 +4,15 @@ const SET_USERS = 'SET_USERS';
 const SET_CURRENT_PAGE = 'SET_CURRENT_PAGE';
 const SET_TOTAL_USER_COUNT = 'SET_TOTAL_USER_COUNT';
 const TOOGLE_IS_FEATCHING='TOOGLE_IS_FEATCHING';
+const TOOGLE_IN_FOLLOWING_PROGRESS='TOOGLE_IN_FOLLOWING_PROGRESS';
 
 let initalState = {
   users: [],
   pageSize: 100,
   totalUsersCount: 0,
   currentPage: 1,
-  isFeatching: false
+  isFeatching: false,
+  followingInProgress: false
 };
 
 const usersReducer = (state = initalState, action) => {
@@ -69,6 +71,9 @@ const usersReducer = (state = initalState, action) => {
           isFeatching: action.isFeatching
         }
       }
+      case TOOGLE_IN_FOLLOWING_PROGRESS:{
+        return {...state, followingInProgress: action.isFeatching}
+      }
       default:
         return state
   }
@@ -99,6 +104,7 @@ export const setTotalUsersCount = (userCount) => ({
 export const toogleIsFeatching=(isFeatching)=>({
   type: TOOGLE_IS_FEATCHING,
   isFeatching
-})
+});
+export const toggleFollowingProgress=(isFeatching)=>({type: TOOGLE_IN_FOLLOWING_PROGRESS, isFeatching});
 
 export default usersReducer

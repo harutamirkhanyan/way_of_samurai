@@ -1,8 +1,25 @@
 .header{
   grid-area: h;
   background-color: rgb(11, 115, 7);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .header img{
-  width: 20px;
+  height: 35px;
+  width: 35px;
+  border-radius: 10px;
+  margin-left: 10px;
+}
+
+.login{
+  margin-right: 10px;
+  font-weight: 900;
+  font-size: 25px;
+}
+
+.login a{
+  color: white;
+  text-decoration: none;
 }

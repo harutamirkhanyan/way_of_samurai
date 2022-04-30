@@ -1,3 +1,27 @@
 .descriptionBlock{
-  padding: 10px;
+  padding: 15px;
+  display: flex;
+  align-items: start;
+  width: 100%;
+}
+
+.user{
+  display: flex;
+  flex-direction: column;
+  margin-left: 20px;
+}
+
+.info{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  font-size: 20px;
+}
+
+.social{
+  display: flex;
+  flex-direction: column;
+  font-size: 30px;
+  color:fuchsia
 }

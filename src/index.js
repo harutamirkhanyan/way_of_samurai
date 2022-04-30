@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom/client';
 import App from './App';
 import { BrowserRouter } from 'react-router-dom';
 import reportWebVitals from './reportWebVitals';
-import store from './components/redux/reduxStore';
+import store from './redux/reduxStore';
 import './index.css';
 
 import { Provider } from 'react-redux';
@@ -25,3 +25,4 @@ let callSubscriber=(state)=>{
 
 callSubscriber(store.getState())
 reportWebVitals();
+window.store=store;

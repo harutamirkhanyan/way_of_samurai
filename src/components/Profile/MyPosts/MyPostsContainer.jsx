@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import {
   addPostActoionCreator,
   updatePostActionCreator,
-} from "../../redux/profileReducer";
+} from "../../../redux/profileReducer";
 import MyPosts from "./MyPosts";
 
 

@@ -1,7 +1,7 @@
 import React from 'react';
 import * as axios from 'axios';
 import {connect} from 'react-redux';
-import { currentPage, follow, toogleIsFeatching, setTotalUsersCount, setUsers, unFollow } from '../redux/userReducer';
+import { currentPage, follow, toogleIsFeatching, setTotalUsersCount, setUsers, unFollow, toggleFollowingProgress } from '../../redux/userReducer';
 import Users from './Users';
 import Preloader from '../common/Preloader/Preloader'
 
@@ -9,7 +9,7 @@ class UsersContainer extends React.Component {
 
     componentDidMount() {
         this.props.toogleIsFeatching(true)
-        axios.get(`https://social-network.samuraijs.com/api/1.0/users?page=${this.props.currentPage}&count=${this.props.pageSize}`)
+        axios.get(`https://social-network.samuraijs.com/api/1.0/users?page=${this.props.currentPage}&count=${this.props.pageSize}`, {withCredentials: true})
             .then(response => {
                 this.props.toogleIsFeatching(false)
                 this.props.setUsers(response.data.items);
@@ -20,7 +20,7 @@ class UsersContainer extends React.Component {
     onPageChanged = (pageNumber) => {
         this.props.toogleIsFeatching(true)
         this.props.currentPage(pageNumber);
-        axios.get(`https://social-network.samuraijs.com/api/1.0/users?page=${pageNumber}&count=${this.props.pageSize}`)
+        axios.get(`https://social-network.samuraijs.com/api/1.0/users?page=${pageNumber}&count=${this.props.pageSize}`, {withCredentials: true})
             .then(response => {
                 this.props.toogleIsFeatching(false)
                 this.props.setUsers(response.data.items);
@@ -41,8 +41,6 @@ class UsersContainer extends React.Component {
      />
      </>
  }
-
-  
 }
 
 let mapStateToProps = (state) => {
@@ -55,31 +53,6 @@ let mapStateToProps = (state) => {
     }
 }
 
-// let mapDispatchToProps = (dispatch) => {
-//     return {
-//         follow: (userId) => {
-//             dispatch(followAC(userId));
-//         },
-//         unfollow: (userId) => {
-//             dispatch(unFollowAC(userId));
-//         },
-//         setUsers: (users) => {
-//             dispatch(setUsersAC(users));
-//         },
-//         setCurrentPage: (pageNumber) => {
-//             dispatch(currentPageAC(pageNumber))
-//         },
-//         setTotalUsersCount: (totalCount) => {
-//             dispatch(setTotalUsersCountAC(totalCount))
-//         },
-//         toogleIsFeatching: (featchStatus)=>{
-//             dispatch(isFeatchingAC(featchStatus))
-//         },
-//     }
-// }
-
-
-
 export default connect(mapStateToProps, {
     follow,
     unFollow,
@@ -87,4 +60,5 @@ export default connect(mapStateToProps, {
     currentPage,
     setTotalUsersCount,
     toogleIsFeatching,
+    toggleFollowingProgress
 })(UsersContainer);

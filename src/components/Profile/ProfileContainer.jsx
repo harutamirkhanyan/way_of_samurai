@@ -2,9 +2,12 @@ import React, { useEffect } from 'react';
 import Profile from './Profile';
 import style from './Profile.module.css';
 import { connect } from 'react-redux';
-import {setUserProfile} from './../../redux/profileReducer';
+import {setUserProfile, updateStatus,getStatus} from './../../redux/profileReducer';
 import { useParams } from 'react-router-dom';
 import { profileAPI } from '../../api/api';
+import { withAuthRedirect } from '../../hoc/withAuthRedirect';
+import { compose } from 'redux';
+
 
 const ProfileContainer=(props)=>{
   const id=useParams()
@@ -12,22 +15,27 @@ const ProfileContainer=(props)=>{
     
     profileAPI.getProfile(id.userId).then((data)=>{
       props.setUserProfile(data);
+      props.getStatus(id.userId)
     })
   }, [id]);
-
-
+    
   return (
         <div className={style.content}>
-       <Profile {...props} profile={props.profile}/>
+       <Profile {...props} profile={props.profile} status={props.status} updateStatus={props.updateStatus}/>
         </div>
       );
-
-
 }
 
-let mapStateToProps=(state)=>({profile: state.profilePage.profile});
 
-export default connect(mapStateToProps,{setUserProfile})(ProfileContainer);
+let mapStateToProps=(state)=>({
+    profile: state.profilePage.profile,
+    status: state.profilePage.status
+  });
+export default compose(
+  connect(mapStateToProps,{setUserProfile, getStatus, updateStatus}),
+  withAuthRedirect
+)(ProfileContainer)
+
 
 
 // class ProfileContainer extends  React.Component {

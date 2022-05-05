@@ -1,30 +1,20 @@
 import React from 'react';
-import * as axios from 'axios';
 import {connect} from 'react-redux';
-import { currentPage, follow, toogleIsFeatching, setTotalUsersCount, setUsers, unFollow, toggleFollowingProgress } from '../../redux/userReducer';
+import { currentPage, follow, unfollow, toggleFollowingProgress, getUsers } from '../../redux/userReducer';
 import Users from './Users';
 import Preloader from '../common/Preloader/Preloader'
+import { compose } from 'redux';
+import { withAuthRedirect } from '../../hoc/withAuthRedirect';
+
 
 class UsersContainer extends React.Component {
 
     componentDidMount() {
-        this.props.toogleIsFeatching(true)
-        axios.get(`https://social-network.samuraijs.com/api/1.0/users?page=${this.props.currentPage}&count=${this.props.pageSize}`, {withCredentials: true})
-            .then(response => {
-                this.props.toogleIsFeatching(false)
-                this.props.setUsers(response.data.items);
-                this.props.setTotalUsersCount(response.data.totalCount);
-            });
+        this.props.getUsers(this.props.currentPage, this.props.pageSize)
     }
 
     onPageChanged = (pageNumber) => {
-        this.props.toogleIsFeatching(true)
-        this.props.currentPage(pageNumber);
-        axios.get(`https://social-network.samuraijs.com/api/1.0/users?page=${pageNumber}&count=${this.props.pageSize}`, {withCredentials: true})
-            .then(response => {
-                this.props.toogleIsFeatching(false)
-                this.props.setUsers(response.data.items);
-            });
+        this.props.getUsers(pageNumber, this.props.pageSize)
     }
 
  render(){
@@ -36,8 +26,9 @@ class UsersContainer extends React.Component {
         pageSize={this.props.pageSize}
         currentPage={this.props.currentPage}
         follow={this.props.follow}
-        unFollow={this.props.unFollow}
+        unfollow={this.props.unfollow}
         onPageChanged={this.onPageChanged}
+        followingInProgress={this.props.followingInProgress}
      />
      </>
  }
@@ -50,15 +41,26 @@ let mapStateToProps = (state) => {
         totalUsersCount: state.usersPage.totalUsersCount,
         currentPage: state.usersPage.currentPage,
         isFeatching: state.usersPage.isFeatching,
+        followingInProgress: state.usersPage.followingInProgress
     }
 }
 
-export default connect(mapStateToProps, {
-    follow,
-    unFollow,
-    setUsers,
-    currentPage,
-    setTotalUsersCount,
-    toogleIsFeatching,
-    toggleFollowingProgress
-})(UsersContainer);
+export default compose(
+    withAuthRedirect,
+    connect(mapStateToProps, {
+        follow,
+        unfollow,
+        currentPage,    
+        toggleFollowingProgress,
+        getUsers
+    })
+)(UsersContainer)
+
+
+// export default connect(mapStateToProps, {
+//     follow,
+//     unfollow,
+//     currentPage,    
+//     toggleFollowingProgress,
+//     getUsers
+// })(UsersContainer);

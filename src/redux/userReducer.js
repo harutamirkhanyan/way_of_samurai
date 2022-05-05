@@ -1,10 +1,15 @@
+import * as axios from 'axios';
+import {
+  userAPI
+} from '../api/api';
+
 const FOLLOW = 'FOLLOW';
 const UNFOLLOW = 'UNFOLLOW';
 const SET_USERS = 'SET_USERS';
 const SET_CURRENT_PAGE = 'SET_CURRENT_PAGE';
 const SET_TOTAL_USER_COUNT = 'SET_TOTAL_USER_COUNT';
-const TOOGLE_IS_FEATCHING='TOOGLE_IS_FEATCHING';
-const TOOGLE_IN_FOLLOWING_PROGRESS='TOOGLE_IN_FOLLOWING_PROGRESS';
+const TOOGLE_IS_FEATCHING = 'TOOGLE_IS_FEATCHING';
+const TOOGLE_IN_FOLLOWING_PROGRESS = 'TOOGLE_IN_FOLLOWING_PROGRESS';
 
 let initalState = {
   users: [],
@@ -12,7 +17,7 @@ let initalState = {
   totalUsersCount: 0,
   currentPage: 1,
   isFeatching: false,
-  followingInProgress: false
+  followingInProgress: []
 };
 
 const usersReducer = (state = initalState, action) => {
@@ -59,20 +64,25 @@ const usersReducer = (state = initalState, action) => {
           currentPage: action.currentPage
         }
       }
-      case SET_TOTAL_USER_COUNT:{
+      case SET_TOTAL_USER_COUNT: {
         return {
           ...state,
           totalUsersCount: action.userCount
         }
       }
-      case TOOGLE_IS_FEATCHING:{
+      case TOOGLE_IS_FEATCHING: {
         return {
           ...state,
           isFeatching: action.isFeatching
         }
       }
-      case TOOGLE_IN_FOLLOWING_PROGRESS:{
-        return {...state, followingInProgress: action.isFeatching}
+      case TOOGLE_IN_FOLLOWING_PROGRESS: {
+        return {
+          ...state,
+          followingInProgress: action.isFeatching ?
+            [...state.followingInProgress, action.userId] :
+            state.followingInProgress.filter(id => id != action.userId)
+        }
       }
       default:
         return state
@@ -80,11 +90,11 @@ const usersReducer = (state = initalState, action) => {
 }
 
 
-export const follow = (userId) => ({
+export const acceptFollow = (userId) => ({
   type: FOLLOW,
   userId
 });
-export const unFollow = (userId) => ({
+export const acceptUnFollow = (userId) => ({
   type: UNFOLLOW,
   userId
 });
@@ -101,10 +111,53 @@ export const setTotalUsersCount = (userCount) => ({
   userCount
 });
 
-export const toogleIsFeatching=(isFeatching)=>({
+export const toogleIsFeatching = (isFeatching) => ({
   type: TOOGLE_IS_FEATCHING,
   isFeatching
 });
-export const toggleFollowingProgress=(isFeatching)=>({type: TOOGLE_IN_FOLLOWING_PROGRESS, isFeatching});
+export const toggleFollowingProgress = (isFeatching, userId) => ({
+  type: TOOGLE_IN_FOLLOWING_PROGRESS,
+  isFeatching,
+  userId
+});
+
+export const getUsers= (currentPage, pageSize) => {
+  return (dispatch) => {
+
+    dispatch(toogleIsFeatching(true))
+    userAPI.getUsers(currentPage, pageSize)
+      .then(response => {
+        dispatch(toogleIsFeatching(false))
+        dispatch(setUsers(response.items))
+        dispatch(setTotalUsersCount(response.totalCount))
+      });
+  }
+}
+
+export const follow= (userId) => {
+  return (dispatch) => {
+   dispatch( toggleFollowingProgress(true, userId))
+    userAPI.follow(userId)
+      .then((response) => {
+        if (response.data.resultCode === 0) {
+          dispatch( acceptFollow(userId))
+        }
+       dispatch (toggleFollowingProgress(false, userId))
+      });
+  }
+}
+
+export const unfollow= (userId) => {
+  return (dispatch) => {
+   dispatch( toggleFollowingProgress(true, userId))
+    userAPI.unfollow(userId)
+      .then((response) => {
+        if (response.data.resultCode === 0) {
+          dispatch( acceptUnFollow(userId))
+        }
+       dispatch (toggleFollowingProgress(false, userId))
+      });
+  }
+}
 
 export default usersReducer

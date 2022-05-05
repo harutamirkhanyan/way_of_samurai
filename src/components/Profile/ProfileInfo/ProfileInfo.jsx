@@ -1,9 +1,9 @@
 import React from 'react';
 import Preloader from '../../common/Preloader/Preloader';
 import style from './ProfileInfo.module.css';
+import ProfileStatus from './ProfileStatus.jsx'
 
 const ProfileInfo = (props) => {
-  console.log(props)
   if (!props.profile) {
     return <Preloader />;
   } else 
@@ -31,6 +31,8 @@ const ProfileInfo = (props) => {
           </p>
         </div>
       </div>
+      {console.log(props, 'from profileinfo')}
+      <ProfileStatus status={props.status} updateStatus={props.updateStatus}/>
     </div>
   );
 };
